@@ -1,0 +1,30 @@
+PORT=8080
+CORS_ORIGIN=https://yourapp.domain.com
+
+#DB URL
+MONGODB_URI='' #production
+
+#Environment Mode
+NODE_ENV=production
+
+#Logging Level
+LOG_LEVEL=error
+
+#Build Release Time
+BUILD_TIME=$(date +%Y-%m-%dT%H:%M:%S%z)
+
+#JWT
+JWT_ACCESS_SECRET=
+JWT_REFRESH_SECRET=
+JWT_ACCESS_EXPIRES_IN=15m
+JWT_REFRESH_EXPIRES_IN=7d
+
+#Redis
+REDIS_HOST=redis
+REDIS_PORT=6379
+REDIS_PASSWORD=''
+
+#Grafana
+GF_SECURITY_ADMIN_PASSWORD=''
+GF_USERS_ALLOW_SIGN_UP=false
+GF_SERVER_ROOT_URL=https://grafana.yourapp.domain.com

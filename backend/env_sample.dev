@@ -1,0 +1,26 @@
+PORT=8080
+CORS_ORIGIN=http://localhost:8080
+
+#DB URL
+DATABASE_URL="" #dev
+
+#Environment Mode
+NODE_ENV=development
+
+#Logging Level
+LOG_LEVEL='error'
+
+#JWT
+JWT_ACCESS_SECRET='dev-access-secret-change-in-production'
+JWT_REFRESH_SECRET='dev-refresh-secret-change-in-production'
+JWT_ACCESS_EXPIRES_IN='15m'
+JWT_REFRESH_EXPIRES_IN='7d'
+
+#Redis
+REDIS_HOST='localhost'
+REDIS_PORT='6379'
+REDIS_PASSWORD=''
+
+# Grafana
+GF_SECURITY_ADMIN_PASSWORD=''
+GF_USERS_ALLOW_SIGN_UP=false

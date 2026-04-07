@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: production
+    container_name: mono-server_backend-prod
+    ports:
+      - "8080:8080"
+    env_file:
+      - backend/.env.production
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      redis:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - mono-server-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: mono-server_redis-prod
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    restart: unless-stopped
+    networks:
+      - mono-server-network
+
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: mono-server_prometheus-prod
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./backend/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./backend/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=90d'
+      - '--storage.tsdb.retention.size=50GB'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    networks:
+      - mono-server-network
+
+  grafana:
+    image: grafana/grafana:11.0.0
+    container_name: mono-server_grafana-prod
+    ports:
+      - "3000:3000"
+    env_file:
+      - backend/.env.production
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./backend/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./backend/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    networks:
+      - mono-server-network
+
+volumes:
+  redis-data:
+  prometheus-data:
+  grafana-data:
+
+networks:
+  mono-server-network:
+    driver: bridge
